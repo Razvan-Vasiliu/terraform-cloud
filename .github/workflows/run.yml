@@ -9,6 +9,8 @@ env:
   access_key: "${{secrets.AWS_ACCESS_KEY}}"
   secret_key: "${{secrets.AWS_SECRET_KEY}}"
   public_key: "${{secrets.AWS_SSH_KEY}}"
+  TF_API_TOKEN: "${{secrets.TF_CLOUD}}"
+  TF_CLOUD_ORGANIZATION: "tutorials-tf-cloud"
   TF_WORKSPACE: "terraform-github-actions"
   CONFIG_DIRECTORY: "./"
 
