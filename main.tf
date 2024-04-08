@@ -88,7 +88,7 @@ resource "aws_internet_gateway" "demo-igw" {
 }
 
 resource "aws_key_pair" "ssh-key" {
-  public_key = ${{secrets.AWS_SSH_KEY}}
+//  public_key = ${{secrets.AWS_SSH_KEY}}
 }
 
 resource "aws_instance" "app_server" {
