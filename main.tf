@@ -94,7 +94,7 @@ resource "aws_internet_gateway" "demo-igw" {
 resource "aws_instance" "app_server" {
   ami = "ami-02fe204d17e0189fb"
   instance_type = "t2.micro"
-  key_name = aws_key_pair.ssh-key.id
+//  key_name = aws_key_pair.ssh-key.id
   security_groups = [aws_security_group.ssh-test.id]
   subnet_id = aws_subnet.public-subnet.id
   associate_public_ip_address = true
