@@ -87,9 +87,9 @@ resource "aws_internet_gateway" "demo-igw" {
   }
 }
 
-resource "aws_key_pair" "ssh-key" {
-//  public_key = ${{secrets.AWS_SSH_KEY}}
-}
+/*resource "aws_key_pair" "ssh-key" {
+  public_key = ${{secrets.AWS_SSH_KEY}}
+}*/
 
 resource "aws_instance" "app_server" {
   ami = "ami-02fe204d17e0189fb"
