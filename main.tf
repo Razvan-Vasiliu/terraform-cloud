@@ -21,7 +21,7 @@ provider "aws" {
   access_key = var.access_key
 }
 
-resource "aws_vpc" "demo-vpc" {
+/*resource "aws_vpc" "demo-vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -131,4 +131,4 @@ resource "aws_route_table" "route-table-test-env" {
 resource "aws_route_table_association" "subnet-association" {
   subnet_id      = aws_subnet.public-subnet.id
   route_table_id = aws_route_table.route-table-test-env.id
-}
+}*/
