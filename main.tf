@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket = "tf-razvan"
-    key = "terraform.state"
+    key    = "terraform.state"
     region = "eu-central-1"
   }
 
@@ -16,24 +16,23 @@ terraform {
 }
 
 provider "aws" {
-//  access_key = ${{secrets.AWS_ACCESS_KEY}}
-//  secret_key = ${{secrets.AWS_SECRET_KEY}}
-  region = "eu-central-1"
-//  profile = default
+  region     = "eu-central-1"
+  secret_key = var.secret_key
+  access_key = var.access_key
 }
 
 resource "aws_vpc" "demo-vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_support   = true
   tags = {
     Name = "demo-vpc"
   }
 }
 
 resource "aws_subnet" "private-subnet" {
-  vpc_id     = aws_vpc.demo-vpc.id
-  cidr_block = "10.0.4.0/24"
+  vpc_id            = aws_vpc.demo-vpc.id
+  cidr_block        = "10.0.4.0/24"
   availability_zone = "eu-central-1a"
   tags = {
     Name = "private-subnet"
@@ -41,10 +40,10 @@ resource "aws_subnet" "private-subnet" {
 }
 
 resource "aws_subnet" "public-subnet" {
-  vpc_id     = aws_vpc.demo-vpc.id
-  cidr_block = "10.0.10.0/24"
+  vpc_id                  = aws_vpc.demo-vpc.id
+  cidr_block              = "10.0.10.0/24"
   map_public_ip_on_launch = true
-  availability_zone = "eu-central-1a"
+  availability_zone       = "eu-central-1a"
   tags = {
     Name = "public-subnet"
   }
@@ -56,26 +55,26 @@ resource "aws_security_group" "ssh-test" {
   }
   vpc_id = aws_vpc.demo-vpc.id
   ingress {
-    description = "SSH from VPC"
-    cidr_blocks = ["0.0.0.0/0"]
+    description      = "SSH from VPC"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
   }
   ingress {
-    description = "HTTP from VPC"
-    from_port = 80
-    to_port = 80
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
   egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
 }
@@ -87,16 +86,12 @@ resource "aws_internet_gateway" "demo-igw" {
   }
 }
 
-/*resource "aws_key_pair" "ssh-key" {
-  public_key = ${{secrets.AWS_SSH_KEY}}
-}*/
-
 resource "aws_instance" "app_server" {
-  ami = "ami-02fe204d17e0189fb"
-  instance_type = "t2.micro"
-//  key_name = aws_key_pair.ssh-key.id
-  security_groups = [aws_security_group.ssh-test.id]
-  subnet_id = aws_subnet.public-subnet.id
+  ami                         = "ami-02fe204d17e0189fb"
+  instance_type               = "t2.micro"
+  key_name                    = "razvan"
+  security_groups             = [aws_security_group.ssh-test.id]
+  subnet_id                   = aws_subnet.public-subnet.id
   associate_public_ip_address = true
 
   user_data = <<-EOF
@@ -119,7 +114,7 @@ resource "aws_instance" "app_server" {
 
 resource "aws_eip" "ip-test-env" {
   instance = aws_instance.app_server.id
-  vpc = true
+  vpc      = true
 }
 
 resource "aws_route_table" "route-table-test-env" {
@@ -134,6 +129,6 @@ resource "aws_route_table" "route-table-test-env" {
 }
 
 resource "aws_route_table_association" "subnet-association" {
-  subnet_id = aws_subnet.public-subnet.id
+  subnet_id      = aws_subnet.public-subnet.id
   route_table_id = aws_route_table.route-table-test-env.id
 }
